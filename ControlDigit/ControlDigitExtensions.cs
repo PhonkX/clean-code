@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using NUnit.Framework;
 
 namespace ControlDigit
@@ -27,8 +28,54 @@ namespace ControlDigit
 
 		public static int ControlDigit2(this long number)
 		{
-			throw new NotImplementedException();
+		    int checkSum = GetCheckSum(number);
+		    return GetControlDigitFromSum(checkSum);
 		}
+
+	    private static int GetLastDigit(long number)
+	    {
+	        return (int)(number % 10);
+	    }
+
+	    private static int GetCheckSum(long number)
+	    {
+	      //  var factorSequence = GetFactorSequence();
+	        int checkSum = 0;
+	        int position = 0;
+	        do
+	        {
+	            int digit = GetLastDigit(number);
+	            checkSum += GetDigitWithFactor(position, digit);
+	            number = MoveToNextDigit(number);
+	            position++;
+	        } while (number > 0);
+
+	        return checkSum;
+	    }
+
+
+	    private static int[] GetFactorSequence()
+	    {
+	        return new int[] {1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3, 1, 3};
+	    }
+
+	    private static int GetDigitWithFactor(int position, int digit)
+	    {
+	        return GetFactorSequence()[position] * digit;
+	    }
+
+	    private static long MoveToNextDigit(long number)
+	    {
+	        return number / 10;
+	    }
+
+	    private static int GetControlDigitFromSum(int sum)
+	    {
+            int digit = sum % 11;
+            if (digit == 10)
+                digit = 1;
+            return digit;
+        }
 	}
 
 	[TestFixture]
